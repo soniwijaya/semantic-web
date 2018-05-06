@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Lokasi penyebaran Alumni Hacktiv8</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        #map-canvas{
+            width: 100%;
+            height: 700px;
+        }
+        .navbar{
+            margin-bottom: 2px;
+        }
+        .padding-right{
+            padding: 1px;
+        }
+        .padding-top{
+            padding-top: 10px;
+            background-color: #e7e7e7;
+        }
+        a:hover{
+            color: #000;
+        }
+        .color-text-black{
+            color: black !important;
+        }
+        .color-text-white{
+            color: white !important;
+        }
+        ol {
+            -webkit-padding-start: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand color-text-white">LOKASI PENYEBARAN ALUMNI HACKTIV8</a>
+                </div>
+                <div class="nav navbar-nav navbar-right">
+                    <form class="navbar-form navbar-left">
+                        <button id="location" type="submit" class="btn btn-success">GET YOUR POSITION</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <aside>
+        <div class="side-collapse-container">
+            <div class="col-sm-2">
+                <div id="list-place"></div>
+            </div>
+            <div class="col-sm-10 padding-right">
+                <div id="map-canvas"></div>
+            </div>
+        </div>
+    </aside>
+    <footer>
+        <div class="col-md-12 text-center padding-top">
+            <p>copyrigth by <a class="color-text-black" href="https://soniwijaya.github.io">soniwijaya</a></p>
+        </div>
+    </footer>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7qVQwL8RlsJvPkJddYBpGU9mi3F9bbVU"></script>
+    <script>
+
+        $(document).ready(function(){
+            function initialize() {
+                let mapOptions = {
+                    center: new google.maps.LatLng(-6.2386528,106.8282318),
+                    zoom: 13,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                }
+
+                let map = new google.maps.Map(document.getElementById('map-canvas'),
+                    mapOptions)
+
+            }
+            google.maps.event.addDomListener(window, 'load', initialize)
+
+            let success = function(position){
+                let mapOptions = {
+                    center: new google.maps.LatLng(position.coords.latitude,position.coords.longitude),
+                    zoom: 12,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                }
+                        
+                let map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+                let positionNow = new google.maps.Marker({
+                    position: new google.maps.LatLng(position.coords.latitude,position.coords.longitude),
+                    animation: google.maps.Animation.DROP,
+                })
+
+                let radius = new google.maps.Circle({
+                    map: map,
+                    radius: 5000,
+                    strokeColor: '#eee',
+                    fillColor: '#ccc',
+                    fillOpacity: 0.5
+                })
+                
+                let ImageForIcon = new google.maps.MarkerImage('img/map_icon.png')
+                
+                let tokopediaMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(-6.2214013,106.8173063),
+                    map: map,
+                    title: 'TOKOPEDIA 2 HIRED',
+                    animation: google.maps.Animation.DROP,
+                    icon: ImageForIcon
+                })
+                
+                let bukalapakMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(-6.2739829,106.8192158),
+                    map: map,
+                    title: 'BUKALAPAK 1 HIRED',
+                    animation: google.maps.Animation.DROP,
+                    icon: ImageForIcon
+                })
+                
+                let gojekMarker = new google.maps.Marker({
+                    position: new google.maps.LatLng(-6.2785325,106.8117975),
+                    map: map,
+                    title: 'GOJEK 3 HIRED',
+                    animation: google.maps.Animation.DROP,
+                    icon: ImageForIcon
+                })
+                
+                let tokopedia = new google.maps.InfoWindow({
+                    content: '<b> TOKOPEDIA 2 HIRED <br> Alumni Hacktiv8</b> <br> John Doe Hacktiv8 <br> Davy Jones Hacktiv8'
+                }) 
+                let bukalapak = new google.maps.InfoWindow({
+                    content: '<b> BUKALAPAK 1 HIRED <br> Alumni Hacktiv8</b> <br> Thomas Due Hacktiv8'
+                }) 
+                let gojek = new google.maps.InfoWindow({
+                    content: '<b> GOJEK 3 HIRED <br> Alumni Hacktiv8</b> <br> Micheal Lie Hacktiv8 <br> Jikael Saber Hacktiv8 <br> Smith Joe Hacktiv8'
+                })
+                
+                google.maps.event.addListener(tokopediaMarker, 'click', function() {
+                    tokopedia.open(map, tokopediaMarker)
+                })
+                
+                google.maps.event.addListener(bukalapakMarker, 'click', function() {
+                    bukalapak.open(map, bukalapakMarker)
+                })
+                
+                google.maps.event.addListener(gojekMarker, 'click', function() {
+                    gojek.open(map, gojekMarker)
+                })
+                
+                let imHere = new google.maps.InfoWindow({
+                    content: '<b> Hey you here now! <br> Radius 5 KM </b>'
+                })
+
+                radius.bindTo('center', positionNow, 'position')
+                imHere.open(map,positionNow)
+                positionNow.setMap(map)
+
+                let listPlace = document.getElementById('list-place')
+                listPlace.innerHTML +=  `<section class="col-md-12">
+                                        <img src="img/tokopedia.png" alt="location" style="width:100%">
+                                        <div class="caption">
+                                            <b>Address :</b>
+                                            <p>Jalan Prof Dr. Satrio Kav 11, Lantai 52. Jakarta</p>
+                                            <b>Alumni Hacktiv8</b>
+                                            <ol>
+                                                <li>John Doe Hacktiv8</li>
+                                                <li>Davy Jones Hacktiv8</li>
+                                            </ol>
+                                        </div>
+                                        </section>`
+                listPlace.innerHTML +=  `<section class="col-md-12">
+                                        <img src="img/bukalapak.png" alt="location" style="width:100%">
+                                        <div class="caption">
+                                            <b>Address :</b>
+                                            <p>Plaza City View Lantai 1 Jalan Kemang Timur. Jaksel</p>
+                                            <b>Alumni Hacktiv8</b>
+                                            <ol>
+                                                <li>Thomas Due Hacktiv8</li>
+                                            </ol>
+                                        </div>
+                                        </section>`
+                
+                listPlace.innerHTML +=  `<section class="col-md-12">
+                                        <img src="img/gojek.png" alt="location" style="width:100%">
+                                        <div class="caption">
+                                            <b>Address :</b>
+                                            <p>Jl. Benda Bawah No.1, RT.6/RW.4, Cilandak Tim. Ps Minggu. Jaksel</p>
+                                            <b>Alumni Hacktiv8</b>
+                                            <ol>
+                                                <li>Micheal Lie Hacktiv8</li>
+                                                <li>Jikael Saber Hacktiv8</li>
+                                                <li>Smith Joe Hacktiv8</li>
+                                            </ol>
+                                        </div>
+                                        </section>`
+            }
+
+            document.getElementById('location').onclick = function(){
+                navigator.geolocation.getCurrentPosition(success)
+                return false
+            }
+        })
+    </script>
+</body>
+</html>
